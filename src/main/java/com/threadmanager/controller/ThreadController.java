@@ -61,7 +61,7 @@ public class ThreadController {
     }
 
     // /api/threads/{threadId}?active=true
-    @PutMapping("/{threadId}")
+    @PutMapping("/{threadId}/active")
     public ResponseEntity<String> updateThreadStatus(
             @PathVariable Long threadId,
             @RequestParam boolean active) {
@@ -76,7 +76,7 @@ public class ThreadController {
         }
     }
 
-    // /api/threads/{threadId}/priority?priority=5
+    // /api/threads/{threadId}?priority=1
     @PutMapping("/{threadId}/priority")
     public ResponseEntity<String> updatePriority(
         @PathVariable Long threadId,

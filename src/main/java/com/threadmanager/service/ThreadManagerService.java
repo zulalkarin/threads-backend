@@ -91,7 +91,7 @@ public class ThreadManagerService {
                 if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
                     throw new IllegalArgumentException("Invalid priority value");
                 }
-                thread.setPriority(priority);
+                thread.updatePriority(priority);
                 System.out.println("Thread " + threadId + " priority updated to " + priority);
             } else {
                 System.out.println("Thread " + threadId + " not found");
