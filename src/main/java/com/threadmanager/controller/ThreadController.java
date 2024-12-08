@@ -1,6 +1,7 @@
 package com.threadmanager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ import com.threadmanager.model.ThreadInfo;
 
 @RestController
 @RequestMapping("/api/threads")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ThreadController {
     private final ThreadManagerService threadManagerService;
     
@@ -19,6 +20,18 @@ public class ThreadController {
     public ThreadController(ThreadManagerService threadManagerService) {
         this.threadManagerService = threadManagerService;
     }
+
+    @GetMapping
+    public ResponseEntity<List<ThreadInfo>> getAllThreads() {
+        try {
+            List<ThreadInfo> threads = threadManagerService.getAllThreadsInfo();
+            return ResponseEntity.ok(threads);
+        } catch (Exception e) {
+            System.out.println("Error while fetching threads: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
     
     // /api/threads/create?senderCount=5&receiverCount=3
     @PostMapping("/create")
@@ -26,21 +39,37 @@ public class ThreadController {
         @RequestParam int senderCount,
         @RequestParam int receiverCount
     ) {
-        threadManagerService.createThreads(senderCount, receiverCount);
-        return ResponseEntity.ok("Threads created successfully");
+        try {
+            threadManagerService.createThreads(senderCount, receiverCount);
+            return ResponseEntity.ok("Threads created successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Thread creation failed: " + e.getMessage());
+        }
     }
     
     // /api/threads/active
     @GetMapping("/active")
-    public ResponseEntity<List<ThreadInfo>> getThreadsInfo() {
-        return ResponseEntity.ok(threadManagerService.getAllThreadsInfo());
+    public ResponseEntity<List<ThreadInfo>> getActiveThreads() {
+        try {
+            List<ThreadInfo> threads = threadManagerService.getActiveThreadsInfo();
+            return ResponseEntity.ok(threads);
+        } catch (Exception e) {
+            System.out.println("Error while fetching active threads: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     // /api/threads/{threadId}/stop
     @PutMapping("/{threadId}/stop")
     public ResponseEntity<String> stopThread(@PathVariable Long threadId) {
-        threadManagerService.stopThread(threadId);
-        return ResponseEntity.ok("Thread stopped successfully");
+        try {
+            threadManagerService.stopThread(threadId);
+            return ResponseEntity.ok("Thread stopped successfully");
+        } catch (Exception e) {
+            System.out.println("Error while stopping thread: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
     
     // /api/threads/{threadId}/priority?priority=5
@@ -49,7 +78,12 @@ public class ThreadController {
         @PathVariable Long threadId,
         @RequestParam int priority
     ) {
-        threadManagerService.updateThreadPriority(threadId, priority);
-        return ResponseEntity.ok("Thread priority updated successfully");
+        try {
+            threadManagerService.updateThreadPriority(threadId, priority);
+            return ResponseEntity.ok("Thread priority updated successfully");
+        } catch (Exception e) {
+            System.out.println("Error while updating thread priority: " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
     }
 } 
