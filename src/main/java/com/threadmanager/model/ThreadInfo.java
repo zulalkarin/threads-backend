@@ -2,10 +2,9 @@ package com.threadmanager.model;
 
 public class ThreadInfo {
     private final long id;
-    private final String name;
+    private final ThreadType type;
     private final boolean active;
     private final int priority;
-    private final ThreadType type;
 
     
     public enum ThreadType {
@@ -14,7 +13,6 @@ public class ThreadInfo {
 
     public ThreadInfo(long id, String name, boolean active, int priority, ThreadType type) {
         this.id = id;
-        this.name = name;
         this.active = active;
         this.priority = priority;
         this.type = type;
@@ -26,11 +24,6 @@ public class ThreadInfo {
     public Long getId() {
         return id;
     }
-
-    public String getName() {
-        return name;
-    }
-
     public boolean isActive() {
         return active;
     }
@@ -48,10 +41,9 @@ public class ThreadInfo {
     public String toString() {
         return "ThreadInfo{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", type=" + type +
                 ", active=" + active +
                 ", priority=" + priority +
-                ", type=" + type +
                 '}';
     }
 } 
