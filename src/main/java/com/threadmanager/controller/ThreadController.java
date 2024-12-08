@@ -90,4 +90,17 @@ public class ThreadController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @DeleteMapping
+    // /api/threads 
+    public ResponseEntity<String> deleteAllThreads() {
+        try {
+            threadManagerService.deleteAllThreads();
+            return ResponseEntity.ok("All threads deleted successfully");
+        } catch (Exception e) {
+            System.out.println("Error while deleting threads: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting threads: " + e.getMessage());
+        }
+    }
 } 

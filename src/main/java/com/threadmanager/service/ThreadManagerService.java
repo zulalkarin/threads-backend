@@ -105,5 +105,9 @@ public class ThreadManagerService {
         }
     }
 
+    public void deleteAllThreads() {
+        activeThreads.clear();
+    }
+
     
 }
