@@ -60,18 +60,22 @@ public class ThreadController {
         }
     }
 
-    // /api/threads/{threadId}/stop
-    @PutMapping("/{threadId}/stop")
-    public ResponseEntity<String> stopThread(@PathVariable Long threadId) {
+    // /api/threads/{threadId}?active=true
+    @PutMapping("/{threadId}")
+    public ResponseEntity<String> updateThreadStatus(
+            @PathVariable Long threadId,
+            @RequestParam boolean active) {
         try {
-            threadManagerService.stopThread(threadId);
-            return ResponseEntity.ok("Thread stopped successfully");
+            threadManagerService.updateThreadStatus(threadId, active);
+            String status = active ? "resumed" : "paused";
+            return ResponseEntity.ok("Thread " + status + " successfully");
         } catch (Exception e) {
-            System.out.println("Error while stopping thread: " + e.getMessage());
-            return ResponseEntity.internalServerError().build();
+            System.out.println("Error while updating thread status: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating thread status: " + e.getMessage());
         }
     }
-    
+
     // /api/threads/{threadId}/priority?priority=5
     @PutMapping("/{threadId}/priority")
     public ResponseEntity<String> updatePriority(
