@@ -29,6 +29,7 @@ public class QueueService {
     }
     
     public int getQueueSize() {
+        System.out.println("QUEUE SIZE-------->>>>: " + messageQueue.size());
         return messageQueue.size();
     }
     
