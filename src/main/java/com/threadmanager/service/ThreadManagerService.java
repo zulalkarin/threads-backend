@@ -2,8 +2,6 @@ package com.threadmanager.service;
 
 import com.threadmanager.model.ThreadInfo;
 import com.threadmanager.thread.CustomThread;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,6 @@ import com.threadmanager.model.ThreadInfo.ThreadType;
 
 @Service
 public class ThreadManagerService {
-    private static final Logger logger = LoggerFactory.getLogger(ThreadManagerService.class);
     private final Map<Long, CustomThread> activeThreads = new ConcurrentHashMap<>();
     private final QueueService queueService;
 
@@ -26,6 +23,7 @@ public class ThreadManagerService {
     }
 
     public List<ThreadInfo> getAllThreadsInfo() {
+        System.out.println("All threads info serviceeeeeee: " + activeThreads.size());
         return activeThreads.values().stream()
                 .map(CustomThread::getThreadInfo)
                 .collect(Collectors.toList());
@@ -73,11 +71,15 @@ public class ThreadManagerService {
     public void updateThreadStatus(Long threadId, boolean active) {
         CustomThread thread = activeThreads.get(threadId);
         if (thread != null) {
-            thread.setActive(true);
-            String status = active ? "resumed" : "paused";
-            logger.info("Thread " + threadId + " " + status);
+            if (active) {
+                thread.setActive(true);
+                System.out.println("Thread " + threadId + " resumed");
+            } else {
+                thread.setActive(false);
+                System.out.println("Thread " + threadId + " paused");
+            }
         } else {
-            logger.error("Thread " + threadId + " not found");
+            System.out.println("Thread " + threadId + " not found");
             throw new RuntimeException("Thread not found with ID: " + threadId);
         }
     }
@@ -104,27 +106,7 @@ public class ThreadManagerService {
     }
 
     public void deleteAllThreads() {
-        try {
-            // Önce tüm thread'lerin active flag'ini false yap
-            activeThreads.values().forEach(thread -> thread.setActive(false));
-            
-            // Her thread'i interrupt et ve sonlanmasını bekle
-            for (CustomThread thread : activeThreads.values()) {
-                thread.interrupt();
-                try {
-                    thread.join(1000); // Her thread için max 1 saniye bekle
-                } catch (InterruptedException e) {
-                    logger.warn("Thread interruption failed for thread: " + thread.getId());
-                }
-            }
-            
-            // Map'i temizle
-            activeThreads.clear();
-            logger.info("All threads have been stopped and cleared successfully.");
-        } catch (Exception e) {
-            logger.error("Error while stopping threads: " + e.getMessage());
-            throw new RuntimeException("Failed to stop all threads", e);
-        }
+        activeThreads.clear();
     }
 
     

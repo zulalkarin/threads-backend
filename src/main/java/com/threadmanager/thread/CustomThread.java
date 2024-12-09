@@ -20,27 +20,22 @@ public class CustomThread extends Thread {
     
     @Override
     public void run() {
-        try {
-            while (active && !Thread.currentThread().isInterrupted()) {
-                try {
-                    if (type == ThreadType.SENDER) {
-                        String message = "Message from Thread-" + getId();
-                        queueService.addMessage(message);
-                        System.out.println("Thread-" + getId() + " (Priority:" + getPriority() + ") sent message");
-                    } else {
-                        String message = queueService.getMessage();
-                        if (message != null) {
-                            System.out.println("Thread-" + getId() + " (Priority:" + getPriority() + ") received message");
-                        }
+        while (active) {
+            try {
+                if (type == ThreadType.SENDER) {
+                    String message = "Message from Thread-" + getId();
+                    queueService.addMessage(message);
+                    System.out.println("Thread-" + getId() + " (Priority:" + getPriority() + ") sent message");
+                } else {
+                    String message = queueService.getMessage();
+                    if (message != null) {
+                        System.out.println("Thread-" + getId() + " (Priority:" + getPriority() + ") received message");
                     }
-                    Thread.sleep(FIXED_FREQUENCY);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
                 }
+                Thread.sleep(FIXED_FREQUENCY);
+            } catch (InterruptedException e) {
+                break;
             }
-        } finally {
-            System.out.println("Thread-" + getId() + " is shutting down.");
         }
     }
 
