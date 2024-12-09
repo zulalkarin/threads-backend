@@ -26,12 +26,10 @@ public class ThreadManagerService {
     }
 
     public List<ThreadInfo> getAllThreadsInfo() {
-        System.out.println("All threads info serviceeeeeee: " + activeThreads.size());
         return activeThreads.values().stream()
                 .map(CustomThread::getThreadInfo)
                 .collect(Collectors.toList());
     }
-
 
     public List<ThreadInfo> getActiveThreadsInfo() {
 
@@ -44,8 +42,6 @@ public class ThreadManagerService {
 
     public void createThreads(int senderCount, int receiverCount) {
         try {
-
-            System.out.println("Creating threads");
             // create sender threads
             for (int i = 0; i < senderCount; i++) {
                 CustomThread sender = new CustomThread(
@@ -53,7 +49,7 @@ public class ThreadManagerService {
                         queueService);
                 activeThreads.put(sender.getId(), sender);
                 sender.start();
-                System.out.println("Sender thread created with ID: " + sender.getId());
+                logger.info("Sender thread created with ID: " + sender.getId());
             }
 
             // create receiver threads
@@ -63,10 +59,10 @@ public class ThreadManagerService {
                         queueService);
                 activeThreads.put(receiver.getId(), receiver);
                 receiver.start();
-                System.out.println("Receiver thread created with ID: " + receiver.getId());
+                logger.info("Receiver thread created with ID: " + receiver.getId());
             }
         } catch (Exception e) {
-            System.out.println("Error creating threads: " + e);
+            logger.error("Error creating threads: " + e);
             throw new RuntimeException("Thread creation failed", e);
         }
     }
@@ -76,13 +72,13 @@ public class ThreadManagerService {
         if (thread != null) {
             if (active) {
                 thread.setActive(true);
-                System.out.println("Thread " + threadId + " resumed");
+                logger.info("Thread " + threadId + " resumed");
             } else {
                 thread.setActive(false);
-                System.out.println("Thread " + threadId + " paused");
+                logger.info("Thread " + threadId + " paused");
             }
         } else {
-            System.out.println("Thread " + threadId + " not found");
+            logger.error("Thread " + threadId + " not found");
             throw new RuntimeException("Thread not found with ID: " + threadId);
         }
     }
@@ -95,15 +91,15 @@ public class ThreadManagerService {
                     throw new IllegalArgumentException("Invalid priority value");
                 }
                 thread.updatePriority(priority);
-                System.out.println("Thread " + threadId + " priority updated to " + priority);
+                logger.info("Thread " + threadId + " priority updated to " + priority);
             } else {
-                System.out.println("Thread " + threadId + " not found");
+                logger.error("Thread " + threadId + " not found");
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid priority value for thread " + threadId + ": " + e.getMessage());
+            logger.error("Invalid priority value for thread " + threadId + ": " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            System.out.println("Error updating thread priority: " + e);
+            logger.error("Error updating thread priority: " + e);
             throw new RuntimeException("Failed to update thread priority", e);
         }
     }
@@ -111,20 +107,19 @@ public class ThreadManagerService {
     public void deleteAllThreads() {
 
         try {
-            // Önce tüm thread'lerin active flag'ini false yap
             activeThreads.values().forEach(thread -> thread.setActive(false));
-            
-            // Her thread'i interrupt et ve sonlanmasını bekle
+
+            // interrupt threads
             for (CustomThread thread : activeThreads.values()) {
                 thread.interrupt();
                 try {
-                    thread.join(1000); // Her thread için max 1 saniye bekle
+                    thread.join(1000);
                 } catch (InterruptedException e) {
                     logger.warn("Thread interruption failed for thread: " + thread.getId());
                 }
             }
-            
-            // Map'i temizle
+
+            // clear threads
             activeThreads.clear();
             logger.info("All threads have been stopped and cleared successfully.");
         } catch (Exception e) {
@@ -133,5 +128,4 @@ public class ThreadManagerService {
         }
     }
 
-    
 }
