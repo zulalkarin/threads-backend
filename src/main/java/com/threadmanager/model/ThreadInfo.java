@@ -6,7 +6,6 @@ public class ThreadInfo {
     private final boolean active;
     private final int priority;
 
-    
     public enum ThreadType {
         SENDER, RECEIVER
     }
@@ -17,10 +16,8 @@ public class ThreadInfo {
         this.priority = priority;
         this.type = type;
     }
- 
 
     // Getter and Setter methods
-
     public Long getId() {
         return id;
     }

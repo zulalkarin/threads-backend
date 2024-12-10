@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ import com.threadmanager.model.ThreadInfo;
 
 @RestController
 @RequestMapping("/api/threads")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ThreadController {
     private final ThreadManagerService threadManagerService;
     private final Logger logger = LoggerFactory.getLogger(ThreadController.class);
