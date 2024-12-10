@@ -35,4 +35,16 @@ class QueueServiceTest {
         assertEquals("Test message", message);
         assertEquals(0, queueService.getQueueSize());
     }
+
+    @Test
+    void clearQueue_ShouldClearQueue() {
+        // Arrange
+        queueService.addMessage("Test message");
+
+        // Act
+        queueService.clearQueue();
+
+        // Assert
+        assertEquals(0, queueService.getQueueSize());
+    }
 }

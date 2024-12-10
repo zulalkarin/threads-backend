@@ -44,4 +44,10 @@ public class QueueService {
     public double getOccupancyRate() {
         return (double) messageQueue.size() / MAX_QUEUE_SIZE * 100;
     }
+    
+    public void clearQueue() {
+        logger.info("Clearing all messages from queue");
+        messageQueue.clear();
+        logger.info("Queue cleared successfully. New size: " + messageQueue.size());
+    }
 } 

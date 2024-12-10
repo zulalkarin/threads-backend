@@ -3,6 +3,7 @@ package com.threadmanager.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,17 @@ public class QueueController {
             queueService.getMaxQueueSize(),
             queueService.getOccupancyRate()
         ));
+    }
+
+    @Operation(
+        summary = "Clear queue",
+        description = "Clears all messages from the queue"
+    )
+    @ApiResponse(responseCode = "200", description = "Queue cleared successfully")
+    @DeleteMapping("/clear")
+    public ResponseEntity<String> clearQueue() {
+        queueService.clearQueue();
+        return ResponseEntity.ok("Queue cleared successfully");
     }
 }
 
