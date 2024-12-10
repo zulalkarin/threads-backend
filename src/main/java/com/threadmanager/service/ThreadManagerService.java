@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,12 @@ public class ThreadManagerService {
     private final Map<Long, CustomThread> activeThreads = new ConcurrentHashMap<>();
     private final QueueService queueService;
     private static final Logger logger = LoggerFactory.getLogger(ThreadManagerService.class);
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public ThreadManagerService(QueueService queueService) {
+    public ThreadManagerService(QueueService queueService, SimpMessagingTemplate messagingTemplate) {
         this.queueService = queueService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     public List<ThreadInfo> getAllThreadsInfo() {
@@ -65,6 +68,7 @@ public class ThreadManagerService {
             logger.error("Error creating threads: " + e);
             throw new RuntimeException("Thread creation failed", e);
         }
+        sendThreadUpdate();
     }
 
     public void updateThreadStatus(Long threadId, boolean active) {
@@ -84,6 +88,7 @@ public class ThreadManagerService {
             logger.error("Thread " + threadId + " not found");
             throw new RuntimeException("Thread not found with ID: " + threadId);
         }
+        sendThreadUpdate();
     }
 
     public void updateThreadPriority(Long threadId, int priority) {
@@ -106,6 +111,7 @@ public class ThreadManagerService {
             logger.error("Error updating thread priority: " + e);
             throw new RuntimeException("Failed to update thread priority", e);
         }
+        sendThreadUpdate();
     }
 
     public void deleteAllThreads() {
@@ -130,6 +136,11 @@ public class ThreadManagerService {
             logger.error("Error while stopping threads: " + e.getMessage());
             throw new RuntimeException("Failed to stop all threads", e);
         }
+        sendThreadUpdate();
+    }
+
+    private void sendThreadUpdate() {
+        messagingTemplate.convertAndSend("/topic/threads/updates", getAllThreadsInfo());
     }
 
 }

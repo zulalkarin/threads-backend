@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+
 class ThreadManagerServiceTest {
 
     @Mock
@@ -20,7 +21,7 @@ class ThreadManagerServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        threadManagerService = new ThreadManagerService(queueService);
+        threadManagerService = new ThreadManagerService(queueService, null);
     }
 
     @Test

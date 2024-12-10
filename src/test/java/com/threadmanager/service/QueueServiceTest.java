@@ -3,14 +3,13 @@ package com.threadmanager.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
 class QueueServiceTest {
 
     private QueueService queueService;
 
     @BeforeEach
     void setUp() {
-        queueService = new QueueService();
+        queueService = new QueueService(null);
     }
 
     @Test
