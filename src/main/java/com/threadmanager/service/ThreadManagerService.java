@@ -72,6 +72,9 @@ public class ThreadManagerService {
         if (thread != null) {
             if (active) {
                 thread.setActive(true);
+                synchronized (thread) {
+                    thread.notify();
+                }
                 logger.info("Thread " + threadId + " resumed");
             } else {
                 thread.setActive(false);
@@ -94,6 +97,7 @@ public class ThreadManagerService {
                 logger.info("Thread " + threadId + " priority updated to " + priority);
             } else {
                 logger.error("Thread " + threadId + " not found");
+                throw new RuntimeException("Thread not found with ID: " + threadId);
             }
         } catch (IllegalArgumentException e) {
             logger.error("Invalid priority value for thread " + threadId + ": " + e.getMessage());

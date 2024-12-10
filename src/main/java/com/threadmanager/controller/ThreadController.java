@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +21,7 @@ import com.threadmanager.model.ThreadInfo;
 @CrossOrigin(origins = "http://localhost:3000")
 public class ThreadController {
     private final ThreadManagerService threadManagerService;
+    private final Logger logger = LoggerFactory.getLogger(ThreadController.class);
     
     @Autowired
     public ThreadController(ThreadManagerService threadManagerService) {
@@ -36,7 +39,7 @@ public class ThreadController {
             List<ThreadInfo> threads = threadManagerService.getAllThreadsInfo();
             return ResponseEntity.ok(threads);
         } catch (Exception e) {
-            System.out.println("Error while fetching threads: " + e.getMessage());
+            logger.error("Error while fetching threads: " + e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -74,7 +77,7 @@ public class ThreadController {
             List<ThreadInfo> threads = threadManagerService.getActiveThreadsInfo();
             return ResponseEntity.ok(threads);
         } catch (Exception e) {
-            System.out.println("Error while fetching active threads: " + e.getMessage());
+            logger.error("Error while fetching active threads: " + e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -94,7 +97,7 @@ public class ThreadController {
             String status = active ? "resumed" : "paused";
             return ResponseEntity.ok("Thread " + status + " successfully");
         } catch (Exception e) {
-            System.out.println("Error while updating thread status: " + e.getMessage());
+            logger.error("Error while updating thread status: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error updating thread status: " + e.getMessage());
         }
@@ -115,7 +118,7 @@ public class ThreadController {
             threadManagerService.updateThreadPriority(threadId, priority);
             return ResponseEntity.ok("Thread priority updated successfully");
         } catch (Exception e) {
-            System.out.println("Error while updating thread priority: " + e.getMessage());
+            logger.error("Error while updating thread priority: " + e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -132,7 +135,7 @@ public class ThreadController {
             threadManagerService.deleteAllThreads();
             return ResponseEntity.ok("All threads deleted successfully");
         } catch (Exception e) {
-            System.out.println("Error while deleting threads: " + e.getMessage());
+            logger.error("Error while deleting threads: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error deleting threads: " + e.getMessage());
         }
