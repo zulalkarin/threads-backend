@@ -1,7 +1,7 @@
 package com.threadmanager.thread;
 
 import com.threadmanager.model.ThreadInfo;
-import com.threadmanager.model.ThreadInfo.ThreadType;
+import com.threadmanager.thread.ThreadType;
 import com.threadmanager.service.QueueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

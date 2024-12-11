@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import com.threadmanager.model.ThreadInfo.ThreadType;
+import com.threadmanager.thread.ThreadType;
 
 @Service
 public class ThreadManagerService {

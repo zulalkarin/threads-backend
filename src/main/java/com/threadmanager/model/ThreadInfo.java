@@ -1,14 +1,12 @@
 package com.threadmanager.model;
 
+import com.threadmanager.thread.ThreadType;
+
 public class ThreadInfo {
     private final long id;
     private final ThreadType type;
     private final boolean active;
     private final int priority;
-
-    public enum ThreadType {
-        SENDER, RECEIVER
-    }
 
     public ThreadInfo(long id, String name, boolean active, int priority, ThreadType type) {
         this.id = id;
